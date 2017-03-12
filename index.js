@@ -17,7 +17,11 @@ var c = {
   nodeWidth: 15,
   nodePadding: 15,
   sankeyIterations: 700,
-  vertical: false
+  vertical: false,
+  nodeOpacity: 0.7,
+  nodeSalientOpacity: 1,
+  linkOpacity: 0.2,
+  linkSalientOpacity: 0.4
 };
 
 function keyFun(d) {return d.key;}
@@ -105,7 +109,7 @@ function render(svg, callbacks) {
       .style('transform', c.vertical ? 'matrix(0,1,1,0,0,0)' : 'matrix(1,0,0,1,0,0)')
       .style('fill', 'none')
       .style('stroke', 'black')
-      .style('stroke-opacity', 0.2);
+      .style('stroke-opacity', c.linkOpacity);
 
     var sankeyLink = sankeyLinks.selectAll('.sankeyPath')
       .data(function(d) {
@@ -155,7 +159,7 @@ function render(svg, callbacks) {
           this.parentNode.appendChild(this);
           dragInProgress = true;
           if(hovered) {
-            callbacks.nodeEvents.unhover.apply(0, hovered);
+            //callbacks.nodeEvents.unhover.apply(0, hovered);
             hovered = false;
           }
         })
@@ -192,7 +196,7 @@ function render(svg, callbacks) {
       .style('stroke-width', 0.5)
       .style('stroke', 'black')
       .style('stroke-opacity', 1)
-      .style('fill-opacity', 0.7)
+      .style('fill-opacity', c.nodeOpacity)
       .call(attachPointerEvents, callbacks.nodeEvents);
 
     nodeRect // ceil, +/-0.5 and crispEdges is wizardry for consistent border width on all 4 sides
@@ -223,13 +227,29 @@ var svg = d3.select('body').append('svg')
 
 var renderer = render(svg, {
   linkEvents: {
-    hover: function(e) {d3.select(e).style('stroke-opacity', 0.5);},
-    unhover: function(e) {d3.select(e).style('stroke-opacity', 0.2);},
+    hover: function(e, l) {
+      d3.selectAll('.nodeRect')
+        .filter(function(n) {return n.node.name === l.link.source.name || n.node.name === l.link.target.name;})
+        .style('fill-opacity', c.nodeSalientOpacity);
+      d3.select(e).style('stroke-opacity', c.linkSalientOpacity);
+    },
+    unhover: function(e, d) {
+      d3.selectAll('.nodeRect').style('fill-opacity', c.nodeOpacity);
+      d3.select(e).style('stroke-opacity', c.linkOpacity);
+    },
     select: noop
   },
   nodeEvents: {
-    hover: function(e) {d3.select(e).style('fill-opacity', 1);},
-    unhover: function(e) {d3.select(e).style('fill-opacity', 0.7);},
+    hover: function(e, n) {
+      d3.selectAll('.sankeyPath')
+        .filter(function(l) {return n.node.name === l.link.source.name || n.node.name === l.link.target.name;})
+        .style('stroke-opacity', c.linkSalientOpacity);
+      d3.select(e).style('fill-opacity', c.nodeSalientOpacity);
+    },
+    unhover: function(e, d) {
+      d3.selectAll('.sankeyPath').style('stroke-opacity', c.linkOpacity);
+      d3.select(e).style('fill-opacity', c.nodeOpacity);
+    },
     select: noop
   }
 });
