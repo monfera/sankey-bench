@@ -180,24 +180,29 @@ module.exports = function() {
 
     //
     initializeNodeDepth();
-    resolveCollisions();
 
-    window.requestAnimationFrame(function render(t) {
+    if(iterations) {
+      window.requestAnimationFrame(function render(t) {
 
-      var alpha = Math.pow(Math.sin(t / 3000), 2);
+        var alpha = Math.pow(Math.sin(t / 3000), 2);
 
-      relaxRightToLeft(alpha);
-      resolveCollisions();
-      relaxLeftToRight(alpha);
+        relaxRightToLeft(alpha);
+        resolveCollisions();
+        relaxLeftToRight(alpha);
+        resolveCollisions();
+        computeLinkDepths();
+        callback(sankey);
+
+        if(t / 3000 < Math.PI) {
+          window.requestAnimationFrame(render);
+        }
+
+      });
+    } else {
       resolveCollisions();
       computeLinkDepths();
       callback(sankey);
-
-      if(t / 3000 < Math.PI) {
-        window.requestAnimationFrame(render);
-      }
-
-    });
+    }
 
     function initializeNodeDepth() {
       var ky = min(nodesByBreadth, function(nodes) {
