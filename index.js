@@ -105,6 +105,8 @@ function render(svg, callbacks) {
         });
       });
 
+    sankeyLink.exit().remove();
+
     sankeyLink.enter()
       .append('path')
       .classed('sankeyPath', true)
@@ -122,7 +124,7 @@ function render(svg, callbacks) {
       .style('shape-rendering', 'crispEdges')
       .classed('sankeyNodes', true);
 
-    var sankeyNode = sankeyNodes.selectAll('.sankeyPath')
+    var sankeyNode = sankeyNodes.selectAll('.sankeyNode')
       .data(function(d) {
         return d.sankey.nodes().map(function(l) {
           return {
@@ -131,7 +133,9 @@ function render(svg, callbacks) {
             model: d
           };
         });
-      });
+      }, function(d) {return d.node.name;});
+
+    sankeyNode.exit().remove();
 
     sankeyNode.enter()
       .append('g')
@@ -172,6 +176,8 @@ function render(svg, callbacks) {
     var nodeRect = sankeyNode.selectAll('.nodeRect')
       .data(repeat);
 
+    nodeRect.exit().remove();
+
     nodeRect.enter()
       .append('rect')
       .classed('nodeRect', true)
@@ -188,6 +194,8 @@ function render(svg, callbacks) {
 
     var nodeLabel = sankeyNode.selectAll('.nodeLabel')
       .data(repeat);
+
+    nodeLabel.exit().remove();
 
     nodeLabel.enter()
       .append('text')
@@ -231,7 +239,5 @@ var sankey = d3sankey()
   .nodePadding(c.nodePadding)
   .nodes(nodes.map(function(d) {return {name: d.label};}))
   .links(links)
-  .layout(c.sankeyIterations);
-
-renderer(sankey);
+  .layout(c.sankeyIterations, renderer);
 

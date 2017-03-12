@@ -49,13 +49,11 @@ module.exports = function() {
     return sankey;
   };
 
-  sankey.layout = function(iterations) {
+  sankey.layout = function(iterations, callback) {
     computeNodeLinks();
     computeNodeValues();
     computeNodeBreadths();
-    computeNodeDepths(iterations);
-    computeLinkDepths();
-    return sankey;
+    computeNodeDepths(iterations, callback);
   };
 
   sankey.relayout = function() {
@@ -168,7 +166,7 @@ module.exports = function() {
     });
   }
 
-  function computeNodeDepths(iterations) {
+  function computeNodeDepths(iterations, callback) {
     var nodesByBreadth = nest()
       .key(function(d) { return d.x; })
       .sortKeys(ascending)
@@ -183,6 +181,8 @@ module.exports = function() {
       resolveCollisions();
       relaxLeftToRight(alpha);
       resolveCollisions();
+      computeLinkDepths();
+      callback(sankey);
     }
 
     function initializeNodeDepth() {
