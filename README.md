@@ -1,7 +1,7 @@
 # sankey-bench
 Test baseline for Sankey layouting algorithms
 
-Example build: http://bl.ocks.org/monfera/19d6753cde53ecec232a0cc891ddbca3
+Example build and short writeup: http://bl.ocks.org/monfera/19d6753cde53ecec232a0cc891ddbca3
 
 ![sankey anim breath of relaxation](https://cloud.githubusercontent.com/assets/1548516/23832534/6e62a2fc-0736-11e7-95b0-ff9be624a3dd.gif)
 
