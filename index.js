@@ -6,12 +6,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var d3 = require('d3');
 var d3sankey = require('./d3-sankey');
 
 var data = require('./energy');
 
-var width = 960;
+var width = 800;
 var height = 500;
 var margin = {
   l: 20,

@@ -10,7 +10,6 @@
  *    - Overriding alpha decay and iteration limit check with a half-sine curve
  */
 
-var d3 = require('d3');
 var nest = d3.nest;
 var interpolateNumber = d3.interpolateNumber;
 var ascending = d3.ascending;
