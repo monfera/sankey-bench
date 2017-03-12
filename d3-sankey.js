@@ -180,7 +180,7 @@ module.exports = function() {
 
     window.requestAnimationFrame(function render() {
 
-      decay = decay * 0.99;
+      decay = decay * 0.995;
       var alpha = decay// * Math.random();
 
       relaxRightToLeft(alpha);
