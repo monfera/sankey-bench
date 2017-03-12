@@ -4,7 +4,7 @@ var c = {
   nodeTextOffset: 5,
   nodeWidth: 20,
   nodePadding: 15,
-  sankeyIterations: 50,
+  sankeyIterations: 1000,
   vertical: false
 };
 

@@ -176,14 +176,24 @@ module.exports = function() {
     //
     initializeNodeDepth();
     resolveCollisions();
-    for (var alpha = 1; iterations > 0; --iterations) {
-      relaxRightToLeft(alpha *= .99);
+    var alpha = 1;
+
+    window.requestAnimationFrame(function render() {
+
+      alpha *= 0.997;
+
+      relaxRightToLeft(alpha);
       resolveCollisions();
       relaxLeftToRight(alpha);
       resolveCollisions();
       computeLinkDepths();
       callback(sankey);
-    }
+
+      if(iterations-- > 0) {
+        window.requestAnimationFrame(render);
+      }
+
+    });
 
     function initializeNodeDepth() {
       var ky = min(nodesByBreadth, function(nodes) {
