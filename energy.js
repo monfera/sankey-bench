@@ -98,7 +98,7 @@ module.exports = {
     {"source":2,"target":19,"value":3.64},
     {"source":2,"target":33,"value":33.218},
     {"source":2,"target":20,"value":4.413},
-    {"source":34,"target":1,"value":4.375},
+    {"source":34,"target":1,"value":14.375},
     {"source":24,"target":5,"value":122.952},
     {"source":35,"target":26,"value":839.978},
     {"source":36,"target":37,"value":504.287},

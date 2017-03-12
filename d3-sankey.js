@@ -179,7 +179,7 @@ module.exports = function() {
 
     window.requestAnimationFrame(function render(t) {
 
-      var alpha = Math.pow(Math.sin(t / 2000), 2);
+      var alpha = Math.pow(Math.sin(t / 3000), 2);
 
       relaxRightToLeft(alpha);
       resolveCollisions();
@@ -188,7 +188,7 @@ module.exports = function() {
       computeLinkDepths();
       callback(sankey);
 
-      if(iterations-- > 0) {
+      if(t / 3000 < Math.PI) {
         window.requestAnimationFrame(render);
       }
 
