@@ -1,8 +1,14 @@
-// Copyright Mike Bostock
-// Full copyright: https://github.com/d3/d3-sankey
-// Modifications by Robert Monfera @ Plotly:
-//    Stable sorting https://github.com/d3/d3-sankey/pull/19
-//    Inlining code here so it works with d3 v3.*
+/**
+ * d3-sankey Copyright Mike Bostock
+ *
+ * Source repository: https://github.com/d3/d3-sankey
+ *
+ * Minor local modifications:
+ *    - Stable sorting https://github.com/d3/d3-sankey/pull/19 (irrelevant here)
+ *    - Inlining code here so it works with d3 v3.*
+ *    - Replacing the relaxation loop with a rAF
+ *    - Overriding alpha decay and iteration limit check with a half-sine curve
+ */
 
 var d3 = require('d3');
 var nest = d3.nest;

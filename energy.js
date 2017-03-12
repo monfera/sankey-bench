@@ -1,6 +1,8 @@
-// Direct source: https://bost.ocks.org/mike/sankey/ by Mike Bostock
-// Ultimate source: Department of Energy & Climate Change, Tom Counsell
-// http://tamc.github.io/Sankey/
+/**
+ * Direct source: https://bost.ocks.org/mike/sankey/ by Mike Bostock
+ * Ultimate source: Department of Energy & Climate Change, Tom Counsell
+ *                  http://tamc.github.io/Sankey/
+ */
 
 module.exports = {
   "nodes":[
