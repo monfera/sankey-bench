@@ -4,7 +4,7 @@ var c = {
   nodeTextOffset: 5,
   nodeWidth: 15,
   nodePadding: 10,
-  sankeyIterations: 1000,
+  sankeyIterations: 10000,
   vertical: false
 };
 
@@ -65,8 +65,6 @@ function render(svg, callbacks) {
     var sankey = svg.selectAll('.sankey')
       .data([viewModel(sankey)], keyFun);
 
-    sankey.exit().remove();
-
     sankey.enter()
       .append('g')
       .classed('sankey', true)
@@ -105,8 +103,6 @@ function render(svg, callbacks) {
         });
       });
 
-    sankeyLink.exit().remove();
-
     sankeyLink.enter()
       .append('path')
       .classed('sankeyPath', true)
@@ -134,8 +130,6 @@ function render(svg, callbacks) {
           };
         });
       }, function(d) {return d.node.name;});
-
-    sankeyNode.exit().remove();
 
     sankeyNode.enter()
       .append('g')
@@ -176,8 +170,6 @@ function render(svg, callbacks) {
     var nodeRect = sankeyNode.selectAll('.nodeRect')
       .data(repeat);
 
-    nodeRect.exit().remove();
-
     nodeRect.enter()
       .append('rect')
       .classed('nodeRect', true)
@@ -196,8 +188,6 @@ function render(svg, callbacks) {
     var nodeLabel = sankeyNode.selectAll('.nodeLabel')
       .data(repeat);
 
-    nodeLabel.exit().remove();
-
     nodeLabel.enter()
       .append('text')
       .classed('nodeLabel', true);
@@ -214,8 +204,8 @@ function render(svg, callbacks) {
 };
 
 
-var width = 760;
-var height = 800;
+var width = 960;
+var height = 500;
 var margin = {
   l: 20,
   t: 20,
