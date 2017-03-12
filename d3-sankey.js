@@ -176,12 +176,10 @@ module.exports = function() {
     //
     initializeNodeDepth();
     resolveCollisions();
-    var decay = 1;
 
     window.requestAnimationFrame(function render(t) {
 
-      decay = decay * 0.995;
-      var alpha = Math.pow(Math.sin(t / 2000), 2) //decay// * Math.random();
+      var alpha = Math.pow(Math.sin(t / 2000), 2);
 
       relaxRightToLeft(alpha);
       resolveCollisions();
