@@ -61,7 +61,9 @@ module.exports = function() {
     computeNodeDepths(iterations, callback);
   };
 
-  sankey.relayout = function() {
+  sankey.relayout = function(fixedNode) {
+    var nodesByBreadth = getNodesByBreadth();
+    resolveCollisions(nodesByBreadth, fixedNode);
     computeLinkDepths();
     return sankey;
   };
@@ -91,6 +93,14 @@ module.exports = function() {
 
     return link;
   };
+
+  function getNodesByBreadth() {
+    return nest()
+      .key(function(d) { return d.x; })
+      .sortKeys(ascending)
+      .entries(nodes)
+      .map(function(d) { return d.values; })
+  }
 
   // Populate the sourceLinks and targetLinks for each node.
   // Also, if the source and target are not objects, assume they are indices.
@@ -171,12 +181,45 @@ module.exports = function() {
     });
   }
 
+  function ascendingDepth(a, b) {
+    return a.y - b.y;
+  }
+
+  function resolveCollisions(nodesByBreadth, fixedNode) {
+    nodesByBreadth.forEach(function(nodes) {
+      var node,
+          dy,
+          y0 = 0,
+          n = nodes.length,
+          i;
+
+      // Push any overlapping nodes down.
+      nodes.sort(ascendingDepth);
+      for (i = 0; i < n; ++i) {
+        node = nodes[i];
+        dy = y0 - node.y;
+        if (dy > 0 && node !== fixedNode) node.y += dy;
+        y0 = node.y + node.dy + nodePadding;
+      }
+
+      // If the bottommost node goes outside the bounds, push it back up.
+      dy = y0 - nodePadding - size[1];
+      if (dy > 0) {
+        y0 = node.y -= dy;
+
+        // Push any overlapping nodes back up.
+        for (i = n - 2; i >= 0; --i) {
+          node = nodes[i];
+          dy = node.y + node.dy + nodePadding - y0;
+          if (dy > 0 && node !== fixedNode) node.y -= dy;
+          y0 = node.y;
+        }
+      }
+    });
+  }
+
   function computeNodeDepths(iterations, callback) {
-    var nodesByBreadth = nest()
-      .key(function(d) { return d.x; })
-      .sortKeys(ascending)
-      .entries(nodes)
-      .map(function(d) { return d.values; });
+    var nodesByBreadth = getNodesByBreadth();
 
     //
     initializeNodeDepth();
@@ -187,9 +230,9 @@ module.exports = function() {
         var alpha = Math.pow(Math.sin(t / 3000), 2);
 
         relaxRightToLeft(alpha);
-        resolveCollisions();
+        resolveCollisions(nodesByBreadth);
         relaxLeftToRight(alpha);
-        resolveCollisions();
+        resolveCollisions(nodesByBreadth);
         computeLinkDepths();
         callback(sankey);
 
@@ -199,7 +242,7 @@ module.exports = function() {
 
       });
     } else {
-      resolveCollisions();
+      resolveCollisions(nodesByBreadth);
       computeLinkDepths();
       callback(sankey);
     }
@@ -249,43 +292,6 @@ module.exports = function() {
       function weightedTarget(link) {
         return center(link.target) * link.value;
       }
-    }
-
-    function resolveCollisions() {
-      nodesByBreadth.forEach(function(nodes) {
-        var node,
-            dy,
-            y0 = 0,
-            n = nodes.length,
-            i;
-
-        // Push any overlapping nodes down.
-        nodes.sort(ascendingDepth);
-        for (i = 0; i < n; ++i) {
-          node = nodes[i];
-          dy = y0 - node.y;
-          if (dy > 0) node.y += dy;
-          y0 = node.y + node.dy + nodePadding;
-        }
-
-        // If the bottommost node goes outside the bounds, push it back up.
-        dy = y0 - nodePadding - size[1];
-        if (dy > 0) {
-          y0 = node.y -= dy;
-
-          // Push any overlapping nodes back up.
-          for (i = n - 2; i >= 0; --i) {
-            node = nodes[i];
-            dy = node.y + node.dy + nodePadding - y0;
-            if (dy > 0) node.y -= dy;
-            y0 = node.y;
-          }
-        }
-      });
-    }
-
-    function ascendingDepth(a, b) {
-      return a.y - b.y;
     }
   }
 

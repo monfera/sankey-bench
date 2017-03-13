@@ -23,7 +23,7 @@ var c = {
   nodeTextOffset: 5,
   nodeWidth: 15,
   nodePadding: 14,
-  sankeyIterations: 0,
+  sankeyIterations: 100,
   vertical: false,
   nodeOpacity: 0.7,
   nodeSalientOpacity: 1,
@@ -179,8 +179,12 @@ function render(svg, callbacks) {
               d3.select(this).style('transform', 'translate(' + d.node.x + 'px,' + d.node.y + 'px)');
             }
 
-            d.sankey.relayout();
+            d.sankey.relayout(d.node);
             sankeyLink.attr('d', linkPath);
+            sankeyNode
+              .style('transform', c.vertical ?
+                function(d) {return 'translate(' + (Math.floor(d.node.y) - 0.5) + 'px, ' + (Math.floor(d.node.x) + 0.5) + 'px)';} :
+                function(d) {return 'translate(' + (Math.floor(d.node.x) - 0.5) + 'px, ' + (Math.floor(d.node.y) + 0.5) + 'px)';});
           }
         )
         .on('dragend', function() {
