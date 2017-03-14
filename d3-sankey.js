@@ -195,10 +195,11 @@ module.exports = function() {
     return a.y - b.y;
   }
 
-  function resolveCollisionsInBreadth(nodes, fixedNode) {
+  function resolveCollisionsInBreadth(nodes, fixedNodeSomewhere) {
     var node,
         dy,
         y0 = 0,
+        fixedNode = nodes.indexOf(fixedNodeSomewhere) === -1 ? null : fixedNodeSomewhere,
         fr = fixedNode ? fixedNode.dy / 2 : 0,
         fym = fixedNode ? fixedNode.y + fr : 0,
         i;
@@ -216,16 +217,37 @@ module.exports = function() {
       var by = val(b);
       return ay - by;
     });
-    for (i = 0; i < nodes.length; i++) {
-      node = nodes[i];
-      dy = y0 - node.y;
-      if (dy > 0 && node !== fixedNode) node.y += dy;
-      y0 = node.y + node.dy + nodePadding;
+
+    if(fixedNode) {
+      for (i = 0; i < nodes.length; i++) {
+        node = nodes[i];
+        dy = y0 - node.y;
+        if (dy > 0 && node !== fixedNode) node.y += dy;
+        y0 = node.y + node.dy + nodePadding;
+      }
+      y0 = size[1];
+      for (i = nodes.length - 1; i >= 0; i--) {
+        node = nodes[i];
+        dy = node.y + node.dy + nodePadding - y0;
+        if (dy > 0 && node !== fixedNode) node.y -= dy;
+        y0 = node.y;
+      }
+
+    } else {
+      for (i = 0; i < nodes.length; i++) {
+        node = nodes[i];
+        dy = y0 - node.y;
+        if (dy > 0 && node !== fixedNode) node.y += dy;
+        y0 = node.y + node.dy + nodePadding;
+      }
     }
+
+
 
     // If the bottommost node goes outside the bounds, push it back up.
     dy = y0 - nodePadding - size[1];
-    if (dy > 0) {
+
+    if (!fixedNode && dy > 0) {
       y0 = node.y -= dy;
 
       // Push any overlapping nodes back up.
@@ -236,6 +258,29 @@ module.exports = function() {
         y0 = node.y;
       }
     }
+
+
+    if(0)
+    if(fixedNode) {
+      y0 = node.y - dy;
+      for (i = nodes.length - 2; i >= 0; i--) {
+        node = nodes[i];
+        dy = node.y + node.dy + nodePadding - y0;
+        if (dy > 0 && node !== fixedNode) node.y -= dy;
+        y0 = node.y;
+      }
+      //y0 = 0;
+      for (i = 0; i < nodes.length; i++) {
+        node = nodes[i];
+        dy = y0 - node.y;
+        if (dy > 0 && node !== fixedNode) node.y += dy;
+        y0 = node.y + node.dy + nodePadding;
+      }
+
+
+    }
+
+
   }
 
   function resolveCollisions(nodesByBreadth, fixedNode) {
