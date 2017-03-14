@@ -207,27 +207,10 @@ module.exports = function() {
     nodes.sort(function(a, b) {
       function val(thing) {
 
-        var fixed = nodes.indexOf(fixedNode) === -1 ? null : fixedNode;
         var r = thing.dy / 2;
         var ym = thing.y + r;
 
-        var jump = 2 * fr;
-
-        if(thing === fixed || !fixed) {
-          return ym;
-        } else if(ym < fym && ym + r > fym - fr) {
-          return ym + jump;
-        } else if(ym > fym && ym - r < fym + fr) {
-          return ym - jump;
-        } else if (ym < fym) {
-          return ym - jump;
-        } else if(ym > fym) {
-          return ym + jump;
-        }
-
-        debugger;
-
-        return fixed && (thing.y + thing.dy < fixed.y) ? thing.y + fixed.dy : thing.y
+        return ym;
       }
       var ay = val(a);
       var by = val(b);

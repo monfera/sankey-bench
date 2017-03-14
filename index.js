@@ -22,7 +22,7 @@ var margin = {
 var c = {
   nodeTextOffset: 5,
   nodeWidth: 15,
-  nodePadding: 0,
+  nodePadding: 15,
   sankeyIterations: 0,
   vertical: false,
   nodeOpacity: 0.7,
