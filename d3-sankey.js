@@ -61,10 +61,20 @@ module.exports = function() {
     computeNodeDepths(iterations, callback);
   };
 
-  sankey.relayout = function(fixedNode) {
+  sankey.relayout = function() {
+    computeLinkDepths();
+    return sankey;
+  };
+
+  sankey.snap = function(fixedNode) {
     var nodesByBreadth = getNodesByBreadth();
     resolveCollisions(nodesByBreadth, fixedNode);
-    computeLinkDepths();
+    return sankey;
+  };
+
+  sankey.snapRelayout = function(fixedNode) {
+    sankey.snap(fixedNode);
+    sankey.relayout();
     return sankey;
   };
 
@@ -185,36 +195,43 @@ module.exports = function() {
     return a.y - b.y;
   }
 
+  function resolveCollisionsInBreadth(nodes, fixedNode) {
+    var node,
+        dy,
+        y0 = 0,
+        i;
+
+    // Push any overlapping nodes down.
+    nodes.sort(function(a, b) {
+      var ay = a === fixedNode && b.y > a.y ? a.y + a.dy : a.y;
+      var by = b === fixedNode && a.y > b.y ? b.y + b.dy : b.y;
+      return ay - by;
+    });
+    for (i = 0; i < nodes.length; i++) {
+      node = nodes[i];
+      dy = y0 - node.y;
+      if (dy > 0 && node !== fixedNode) node.y += dy;
+      y0 = node.y + node.dy + nodePadding;
+    }
+
+    // If the bottommost node goes outside the bounds, push it back up.
+    dy = y0 - nodePadding - size[1];
+    if (dy > 0) {
+      y0 = node.y -= dy;
+
+      // Push any overlapping nodes back up.
+      for (i = nodes.length - 2; i >= 0; i--) {
+        node = nodes[i];
+        dy = node.y + node.dy + nodePadding - y0;
+        if (dy > 0 && node !== fixedNode) node.y -= dy;
+        y0 = node.y;
+      }
+    }
+  }
+
   function resolveCollisions(nodesByBreadth, fixedNode) {
     nodesByBreadth.forEach(function(nodes) {
-      var node,
-          dy,
-          y0 = 0,
-          n = nodes.length,
-          i;
-
-      // Push any overlapping nodes down.
-      nodes.sort(ascendingDepth);
-      for (i = 0; i < n; ++i) {
-        node = nodes[i];
-        dy = y0 - node.y;
-        if (dy > 0 && node !== fixedNode) node.y += dy;
-        y0 = node.y + node.dy + nodePadding;
-      }
-
-      // If the bottommost node goes outside the bounds, push it back up.
-      dy = y0 - nodePadding - size[1];
-      if (dy > 0) {
-        y0 = node.y -= dy;
-
-        // Push any overlapping nodes back up.
-        for (i = n - 2; i >= 0; --i) {
-          node = nodes[i];
-          dy = node.y + node.dy + nodePadding - y0;
-          if (dy > 0 && node !== fixedNode) node.y -= dy;
-          y0 = node.y;
-        }
-      }
+      resolveCollisionsInBreadth(nodes, fixedNode);
     });
   }
 

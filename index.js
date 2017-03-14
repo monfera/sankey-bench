@@ -179,7 +179,7 @@ function render(svg, callbacks) {
               d3.select(this).style('transform', 'translate(' + d.node.x + 'px,' + d.node.y + 'px)');
             }
 
-            d.sankey.relayout(d.node);
+            d.sankey.snapRelayout(d.node);
             sankeyLink.attr('d', linkPath);
             sankeyNode
               .style('transform', c.vertical ?
@@ -187,8 +187,14 @@ function render(svg, callbacks) {
                 function(d) {return 'translate(' + (Math.floor(d.node.x) - 0.5) + 'px, ' + (Math.floor(d.node.y) + 0.5) + 'px)';});
           }
         )
-        .on('dragend', function() {
+        .on('dragend', function(d) {
           dragInProgress = false;
+          d.sankey.snapRelayout();
+          sankeyLink.attr('d', linkPath);
+          sankeyNode
+            .style('transform', c.vertical ?
+              function(d) {return 'translate(' + (Math.floor(d.node.y) - 0.5) + 'px, ' + (Math.floor(d.node.x) + 0.5) + 'px)';} :
+              function(d) {return 'translate(' + (Math.floor(d.node.x) - 0.5) + 'px, ' + (Math.floor(d.node.y) + 0.5) + 'px)';});
         }));
 
     sankeyNode
