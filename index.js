@@ -6,6 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+// budo --live --open --host localhost index.js
+
 var d3sankey = require('./d3-sankey');
 
 var data = require('./energy');

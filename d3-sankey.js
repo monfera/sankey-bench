@@ -218,6 +218,8 @@ module.exports = function() {
       return ay - by;
     });
 
+
+
     if(fixedNode) {
       for (i = 0; i < nodes.length; i++) {
         node = nodes[i];
@@ -229,7 +231,9 @@ module.exports = function() {
       for (i = nodes.length - 1; i >= 0; i--) {
         node = nodes[i];
         dy = node.y + node.dy + nodePadding - y0;
-        if (dy > 0 && node !== fixedNode) node.y -= dy;
+        if (dy > 0 && node !== fixedNode  && nodes[0].y > 0) {
+          node.y -= dy;
+        }
         y0 = node.y;
       }
 
@@ -243,7 +247,6 @@ module.exports = function() {
     }
 
 
-
     // If the bottommost node goes outside the bounds, push it back up.
     dy = y0 - nodePadding - size[1];
 
@@ -254,32 +257,10 @@ module.exports = function() {
       for (i = nodes.length - 2; i >= 0; i--) {
         node = nodes[i];
         dy = node.y + node.dy + nodePadding - y0;
-        if (dy > 0 && node !== fixedNode) node.y -= dy;
+        if (dy >= 0 && node !== fixedNode) node.y -= dy;
         y0 = node.y;
       }
     }
-
-
-    if(0)
-    if(fixedNode) {
-      y0 = node.y - dy;
-      for (i = nodes.length - 2; i >= 0; i--) {
-        node = nodes[i];
-        dy = node.y + node.dy + nodePadding - y0;
-        if (dy > 0 && node !== fixedNode) node.y -= dy;
-        y0 = node.y;
-      }
-      //y0 = 0;
-      for (i = 0; i < nodes.length; i++) {
-        node = nodes[i];
-        dy = y0 - node.y;
-        if (dy > 0 && node !== fixedNode) node.y += dy;
-        y0 = node.y + node.dy + nodePadding;
-      }
-
-
-    }
-
 
   }
 
