@@ -22,8 +22,8 @@ var margin = {
 var c = {
   nodeTextOffset: 5,
   nodeWidth: 15,
-  nodePadding: 14,
-  sankeyIterations: 100,
+  nodePadding: 0,
+  sankeyIterations: 0,
   vertical: false,
   nodeOpacity: 0.7,
   nodeSalientOpacity: 1,

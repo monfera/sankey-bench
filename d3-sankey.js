@@ -199,12 +199,38 @@ module.exports = function() {
     var node,
         dy,
         y0 = 0,
+        fr = fixedNode ? fixedNode.dy / 2 : 0,
+        fym = fixedNode ? fixedNode.y + fr : 0,
         i;
 
     // Push any overlapping nodes down.
     nodes.sort(function(a, b) {
-      var ay = a === fixedNode && b.y > a.y ? a.y + a.dy : a.y;
-      var by = b === fixedNode && a.y > b.y ? b.y + b.dy : b.y;
+      function val(thing) {
+
+        var fixed = nodes.indexOf(fixedNode) === -1 ? null : fixedNode;
+        var r = thing.dy / 2;
+        var ym = thing.y + r;
+
+        var jump = 2 * fr;
+
+        if(thing === fixed || !fixed) {
+          return ym;
+        } else if(ym < fym && ym + r > fym - fr) {
+          return ym + jump;
+        } else if(ym > fym && ym - r < fym + fr) {
+          return ym - jump;
+        } else if (ym < fym) {
+          return ym - jump;
+        } else if(ym > fym) {
+          return ym + jump;
+        }
+
+        debugger;
+
+        return fixed && (thing.y + thing.dy < fixed.y) ? thing.y + fixed.dy : thing.y
+      }
+      var ay = val(a);
+      var by = val(b);
       return ay - by;
     });
     for (i = 0; i < nodes.length; i++) {
