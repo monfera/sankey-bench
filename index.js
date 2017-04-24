@@ -25,7 +25,7 @@ var c = {
   nodeTextOffset: 5,
   nodeWidth: 15,
   nodePadding: 15,
-  sankeyIterations: 0,
+  sankeyIterations: 10,
   vertical: false,
   nodeOpacity: 0.7,
   nodeSalientOpacity: 1,
